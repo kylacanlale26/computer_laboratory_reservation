@@ -11,8 +11,10 @@
 
 <!-- variables -->
 ### variables
-    student_name
-    computer_id
+    reservation_id
+    requester_name
+    lab_name
     date
-    time
+    start_time
+    end_time
     status
