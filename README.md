@@ -1,8 +1,18 @@
 # computer_laboratory_reservation
 
-## variables
-### student_name
-### computer_id
-### date
-### time
-### status
+<!-- method -->
+### methods
+    GET
+    POST
+    PUT
+    DELETE
+
+##
+
+<!-- variables -->
+### variables
+    student_name
+    computer_id
+    date
+    time
+    status
