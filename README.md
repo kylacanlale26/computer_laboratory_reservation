@@ -1,7 +1,7 @@
-# computer_laboratory_reservation
+# Computer Laboratory Reservation
 
 <!-- method -->
-### methods
+### Methods
     GET
     POST
     PUT
@@ -10,7 +10,7 @@
 ##
 
 <!-- variables -->
-### variables
+### Variables
     reservation_id
     requester_name
     comlab_name
