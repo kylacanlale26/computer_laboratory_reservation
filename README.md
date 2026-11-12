@@ -13,8 +13,9 @@
 ### variables
     reservation_id
     requester_name
-    lab_name
-    date
+    comlab_name
+    reservation_date
     start_time
     end_time
+    purpose
     status
