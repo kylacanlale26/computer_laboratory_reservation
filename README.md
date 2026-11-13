@@ -24,7 +24,7 @@
 
 <!-- branches -->
 ### Branches
-    bayani_<endpoint>
-    fernandez_<endpoint>
-    lacanlale_<endpoint>
-    nisperos_<endpoint>
+    feature/get-reservation
+    feature/post-reservation
+    feature/put-reservation
+    feature/delete-reservation
