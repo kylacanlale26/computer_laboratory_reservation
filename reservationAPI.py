@@ -30,7 +30,7 @@ reservations = [
         "comlab_name": "Lab 3",
         "reservation_date": "2026-11-22",
         "start_time": "12:00",
-        "end_time": "1:00",
+        "end_time": "13:00",
         "purpose": "Programming Python",
         "status": "reserved",
     },
@@ -39,8 +39,8 @@ reservations = [
         "requester_name": "Princess Bayhag",
         "comlab_name": "Lab 4",
         "reservation_date": "2026-11-20",
-        "start_time": "1:00",
-        "end_time": "2:00",
+        "start_time": "13:00",
+        "end_time": "14:00",
         "purpose": "Thesis defense rehearsal",
         "status": "reserved",
     },
@@ -79,8 +79,8 @@ reservations = [
         "requester_name": "JD Bayani",
         "comlab_name": "Lab 8",
         "reservation_date": "2026-11-25",
-        "start_time": "1:00",
-        "end_time": "2:00",
+        "start_time": "13:00",
+        "end_time": "14:00",
         "purpose": "Thesis Defense",
         "status": "reserved",
     },
@@ -151,34 +151,47 @@ def create_reservation():
                 "error": "End time must be later than start time"
             }), 400
 
-        # Generate a new reservation ID
-        new_id = max(
-            [r["reservation_id"] for r in reservations],
-            default=0
-        ) + 1
-
-        new_reservation = {
-            "reservation_id": new_id,
-            "requester_name": data["requester_name"],
-            "comlab_name": data["comlab_name"],
-            "reservation_date": data["reservation_date"],
-            "start_time": data["start_time"],
-            "end_time": data["end_time"],
-            "purpose": data["purpose"],
-            "status": "reserved"
-        }
-
-        reservations.append(new_reservation)
-
-        return jsonify({
-            "message": "Reservation created successfully",
-            "reservation": new_reservation
-        }), 201
-
     except Exception:
         return jsonify({
             "error": "Internal Server Error"
         }), 500
+        
+    def validate_time(time_value):
+    #Validate time format: HH:MM (24-hour format).
+
+        if not isinstance(time_value, str):
+            return False
+
+        try:
+            datetime.strptime(time_value, "%H:%M")
+            return len(time_value) == 5
+
+        except ValueError:
+            return False
+
+        # Generate a new reservation ID
+    new_id = max(
+        [r["reservation_id"] for r in reservations],
+        default=0
+    ) + 1
+
+    new_reservation = {
+        "reservation_id": new_id,
+        "requester_name": data["requester_name"],
+        "comlab_name": data["comlab_name"],
+        "reservation_date": data["reservation_date"],
+        "start_time": data["start_time"],
+        "end_time": data["end_time"],
+        "purpose": data["purpose"],
+        "status": "reserved"
+    }
+
+    reservations.append(new_reservation)
+
+    return jsonify({
+        "message": "Reservation created successfully",
+        "reservation": new_reservation
+    }), 201  
 
 
 # PUT update an existing reservation -> 200 OK (400, 404, 409)
