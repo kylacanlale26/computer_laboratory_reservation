@@ -24,7 +24,7 @@
 
 <!-- branches -->
 ### Branches
-    bayani_
-    fernandez_
-    lacanlale_
-    nisperos_
+    bayani_<endpoint>
+    fernandez_<endpoint>
+    lacanlale_<endpoint>
+    nisperos_<endpoint>
