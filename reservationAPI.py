@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request 
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -83,7 +84,6 @@ reservations = [
         "purpose": "Thesis Defense",
         "status": "reserved",
     },
-
 ]
 
 # GET all reservations -> 200 OK (500 on unexpected error)
@@ -131,8 +131,6 @@ def create_reservation():
                 }), 400
 
         # Check if end time is later than start time
-        from datetime import datetime
-
         try:
             start = datetime.strptime(
                 data["start_time"], "%H:%M"
@@ -181,6 +179,81 @@ def create_reservation():
         return jsonify({
             "error": "Internal Server Error"
         }), 500
+
+
+# PUT update an existing reservation -> 200 OK (400, 404, 409)
+@app.route("/reservations/<int:reservation_id>", methods=["PUT"])
+def update_reservation(reservation_id):
+    try:
+        data = request.get_json()
+
+        if not data:
+            return jsonify({
+                "error": "Request body is required"
+            }), 400
+
+        # Find existing reservation
+        target_reservation = None
+        for r in reservations:
+            if r["reservation_id"] == reservation_id:
+                target_reservation = r
+                break
+
+        if not target_reservation:
+            return jsonify({
+                "error": "Reservation not found."
+            }), 404
+
+        # Extract fields to update or keep existing values
+        new_comlab = data.get("comlab_name", target_reservation["comlab_name"])
+        new_date = data.get("reservation_date", target_reservation["reservation_date"])
+        new_start = data.get("start_time", target_reservation["start_time"])
+        new_end = data.get("end_time", target_reservation["end_time"])
+
+        # Validate date and time formats if updated
+        try:
+            start = datetime.strptime(new_start, "%H:%M")
+            end = datetime.strptime(new_end, "%H:%M")
+            datetime.strptime(new_date, "%Y-%m-%d")
+        except ValueError:
+            return jsonify({
+                "error": "Invalid date or time format"
+            }), 400
+
+        if end <= start:
+            return jsonify({
+                "error": "End time must be later than start time"
+            }), 400
+
+        # Check for scheduling conflicts with other records (excluding current id)
+        for r in reservations:
+            if r["reservation_id"] != reservation_id:
+                if (r["comlab_name"] == new_comlab and 
+                    r["reservation_date"] == new_date and 
+                    r["start_time"] == new_start):
+                    return jsonify({
+                        "error": "Conflict: Laboratory is already reserved for this date and time slot."
+                    }), 409
+
+        # Perform the update
+        target_reservation["requester_name"] = data.get("requester_name", target_reservation["requester_name"])
+        target_reservation["comlab_name"] = new_comlab
+        target_reservation["reservation_date"] = new_date
+        target_reservation["start_time"] = new_start
+        target_reservation["end_time"] = new_end
+        target_reservation["purpose"] = data.get("purpose", target_reservation["purpose"])
+        target_reservation["status"] = data.get("status", target_reservation["status"])
+
+        return jsonify({
+            "message": "Reservation updated successfully",
+            "reservation": target_reservation
+        }), 200
+
+    except Exception:
+        return jsonify({
+            "error": "Internal Server Error"
+        }), 500
+
 
 if __name__ == "__main__":
     app.run(debug=True)
