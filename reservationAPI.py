@@ -254,6 +254,14 @@ def update_reservation(reservation_id):
             "error": "Internal Server Error"
         }), 500
 
+#DELETE a reservation -> 200 OK (400 Not Found)
+@app.route("/reservations/<int:reservation_id>", methods=["DELETE"])
+def delete_reservation(reservation_id):
+    for reservation in reservations:
+        if reservation['reservation_id'] == reservation_id:
+            reservations.remove(reservation)
+            return jsonify(message="Reservation is deleted.")
+        return jsonify(error="Reservation not found."), 400
 
 if __name__ == "__main__":
     app.run(debug=True)
