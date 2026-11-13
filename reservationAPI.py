@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request 
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -83,7 +84,6 @@ reservations = [
         "purpose": "Thesis Defense",
         "status": "reserved",
     },
-
 ]
 
 # GET all reservations -> 200 OK (500 on unexpected error)
@@ -131,8 +131,6 @@ def create_reservation():
                 }), 400
 
         # Check if end time is later than start time
-        from datetime import datetime
-
         try:
             start = datetime.strptime(
                 data["start_time"], "%H:%M"
@@ -181,7 +179,8 @@ def create_reservation():
         return jsonify({
             "error": "Internal Server Error"
         }), 500
-        
+
+
 # PUT update an existing reservation -> 200 OK (400, 404, 409)
 @app.route("/reservations/<int:reservation_id>", methods=["PUT"])
 def update_reservation(reservation_id):
@@ -244,6 +243,17 @@ def update_reservation(reservation_id):
         target_reservation["end_time"] = new_end
         target_reservation["purpose"] = data.get("purpose", target_reservation["purpose"])
         target_reservation["status"] = data.get("status", target_reservation["status"])
+
+        return jsonify({
+            "message": "Reservation updated successfully",
+            "reservation": target_reservation
+        }), 200
+
+    except Exception:
+        return jsonify({
+            "error": "Internal Server Error"
+        }), 500
+
 
 if __name__ == "__main__":
     app.run(debug=True)
