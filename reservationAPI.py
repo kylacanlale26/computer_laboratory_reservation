@@ -259,6 +259,10 @@ def update_reservation(reservation_id):
 def delete_reservation(reservation_id):
     for reservation in reservations:
         if reservation['reservation_id'] == reservation_id:
+
+            if reservation['status'] == "reserved":
+                return jsonify(error="Active reservations cannot be deleted"), 400
+                
             reservations.remove(reservation)
             return jsonify(message="Reservation is deleted.")
     return jsonify(error="Reservation not found."), 404
