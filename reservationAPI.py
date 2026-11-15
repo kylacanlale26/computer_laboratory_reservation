@@ -260,8 +260,8 @@ def delete_reservation(reservation_id):
     for reservation in reservations:
         if reservation['reservation_id'] == reservation_id:
             reservations.remove(reservation)
-    return jsonify(message="Reservation is deleted.")
+            return jsonify(message="Reservation is deleted.")
     return jsonify(error="Reservation not found."), 400
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(debug=True)
