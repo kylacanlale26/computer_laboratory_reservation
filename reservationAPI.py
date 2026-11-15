@@ -261,7 +261,7 @@ def delete_reservation(reservation_id):
         if reservation['reservation_id'] == reservation_id:
             reservations.remove(reservation)
             return jsonify(message="Reservation is deleted.")
-        return jsonify(error="Reservation not found."), 400
+    return jsonify(error="Reservation not found."), 400
 
 if __name__ == "__main__":
     app.run(debug=True)
